@@ -1,0 +1,11 @@
+digraph {
+	A [label="Data Loader"]
+	B [label="tPatch-GNN Imputer"]
+	C [label="XGBoost Mortality Predictor"]
+	D [label="LLM Interface"]
+	E [label=Clinician]
+	A -> B
+	B -> C
+	C -> D
+	D -> E
+}

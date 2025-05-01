@@ -1,0 +1,9 @@
+
+========================================
+Traceback (most recent call last):
+  File "/Users/vedanshi/Documents/GitHub/practical-ml-project-2/main/OpenManus-main/app/tool/tPatchGNN/tPatchGNN/app.py", line 14, in <module>
+    _ = list(__import__('torch').classes.__path__._path)
+  File "/opt/anaconda3/envs/test_env/lib/python3.9/site-packages/torch/_classes.py", line 13, in __getattr__
+    proxy = torch._C._get_custom_class_python_wrapper(self.name, attr)
+RuntimeError: Tried to instantiate class '__path__._path', but it does not exist! Ensure that it is registered via torch::class_
+

@@ -1,0 +1,16 @@
+{"time":"2025-03-28T14:49:14.296306-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/Users/vedanshi/Documents/GitHub/practical-ml-project-2/wandb/run-20250328_144914-ch0wkymu/logs/debug-core.log"}
+{"time":"2025-03-28T14:49:14.415107-04:00","level":"INFO","msg":"created new stream","id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:14.415375-04:00","level":"INFO","msg":"stream: started","id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:14.415561-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:14.41557-04:00","level":"INFO","msg":"handler: started","stream_id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:14.415727-04:00","level":"INFO","msg":"sender: started","stream_id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:14.659014-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-03-28T14:49:31.060289-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-03-28T14:49:31.061353-04:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-03-28T14:49:31.478407-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-03-28T14:49:31.67853-04:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2025-03-28T14:49:31.689179-04:00","level":"INFO","msg":"stream: closing","id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:31.68938-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:31.68941-04:00","level":"INFO","msg":"sender: closed","stream_id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:31.689635-04:00","level":"INFO","msg":"handler: closed","stream_id":"ch0wkymu"}
+{"time":"2025-03-28T14:49:31.689716-04:00","level":"INFO","msg":"stream: closed","id":"ch0wkymu"}

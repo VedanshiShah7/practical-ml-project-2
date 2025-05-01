@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Data Interface</title>
+    <style>
+        #container {
+            display: flex;
+        }
+        #sidebar {
+            width: 30%;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+        #content {
+            width: 70%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Patient Data Dashboard</h1>
+    <div id="container">
+        <div id="sidebar">
+            <input type="text" id="searchBox" placeholder="Search patients...">
+            <ul id="patientList"></ul>
+        </div>
+        <div id="content">
+            <h2>Patient Profile</h2>
+            <div id="patientData"></div>
+        </div>
+    </div>
+
+    <script>
+        async function searchPatients(query) {
+            const response = await fetch(`/api/search?query=${query}`);
+            const patients = await response.json();
+            const list = document.getElementById('patientList');
+            list.innerHTML = '';
+            patients.forEach(patient => {
+                const item = document.createElement('li');
+                item.textContent = patient.name;
+                item.onclick = () => loadPatient(patient.id);
+                list.appendChild(item);
+            });
+        }
+
+        async function loadPatient(patientId) {
+            const response = await fetch(`/api/patient/${patientId}`);
+            const data = await response.json();
+            document.getElementById('patientData').innerText = JSON.stringify(data, null, 2);
+        }
+
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            searchPatients(e.target.value);
+        });
+    </script>
+</body>
+</html>

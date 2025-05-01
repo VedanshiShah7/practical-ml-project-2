@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/Users/vedanshi/Documents/GitHub/practical-ml-project-2/main/tPatchGNN/tPatchGNN/run_samples.py", line 96, in <module>
+    model, args = Inspector.load_ckpt(ckpt_path, "cpu")
+  File "/Users/vedanshi/Documents/GitHub/practical-ml-project-2/main/tPatchGNN/tPatchGNN/run_samples.py", line 61, in load_ckpt
+    checkpt = torch.load(ckpt_path, map_location=torch.device('cpu'))
+  File "/opt/anaconda3/envs/test_env/lib/python3.9/site-packages/torch/serialization.py", line 1470, in load
+    raise pickle.UnpicklingError(_get_wo_message(str(e))) from None
+_pickle.UnpicklingError: Weights only load failed. This file can still be loaded, to do so you have two options, [1mdo those steps only if you trust the source of the checkpoint[0m.
+	(1) In PyTorch 2.6, we changed the default value of the `weights_only` argument in `torch.load` from `False` to `True`. Re-running `torch.load` with `weights_only` set to `False` will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.
+	(2) Alternatively, to load with `weights_only=True` please check the recommended steps in the following error message.
+	WeightsUnpickler error: Unsupported global: GLOBAL argparse.Namespace was not an allowed global by default. Please use `torch.serialization.add_safe_globals([Namespace])` or the `torch.serialization.safe_globals([Namespace])` context manager to allowlist this global if you trust this class/function.
+
+Check the documentation of torch.load to learn more about types accepted by default with weights_only https://pytorch.org/docs/stable/generated/torch.load.html.
+/opt/anaconda3/envs/test_env/lib/python3.9/site-packages/sklearn/base.py:474: FutureWarning: `BaseEstimator._validate_data` is deprecated in 1.6 and will be removed in 1.7. Use `sklearn.utils.validation.validate_data` instead. This function becomes public and is part of the scikit-learn developer API.
+  warnings.warn(
+Validation F1 Score: 0.9073
+Predictions saved to results/predictions.csv
+Chatbot Response: Elevated glucose levels, particularly hyperglycemia, are significantly associated with increased mortality risk across various patient populations and disease states.  This is because hyperglycemia contributes to inflammation, oxidative stress, and impaired immune function, all of which can worsen underlying conditions and increase the risk of complications.  For example, uncontrolled hyperglycemia in critically ill patients is independently associated with increased risk of infection, organ failure, and death.  Similarly, persistently high glucose levels in patients with cardiovascular disease are linked to higher rates of mortality from cardiovascular events.  The specific impact of glucose levels on mortality prediction varies depending on factors such as the patient's underlying health status, the severity and duration of hyperglycemia, and the presence of other comorbidities.  Therefore, monitoring and managing glucose levels are crucial aspects of improving patient outcomes and reducing mortality risk.
