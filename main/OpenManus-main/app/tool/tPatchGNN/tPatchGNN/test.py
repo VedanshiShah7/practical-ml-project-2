@@ -3,6 +3,10 @@ from typing import Union, Type
 import pandas as pd
 import torch
 import joblib
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+import tensorflow as tf
+from sklearn.metrics import accuracy_score
 
 from pydantic import BaseModel, Field
 from langchain.tools import Tool, StructuredTool
@@ -82,7 +86,6 @@ class StatsInput(BaseModel):
 def compute_statistics(csv_file_path: str) -> str:
     df = pd.read_csv(csv_file_path)
     stats = df.describe(include='all').transpose()
-    # Limit to the first few rows for better readability
     return f"Descriptive statistics:\n{stats.head(10).to_string()}"
 
 statistics_tool = StructuredTool(
@@ -93,7 +96,7 @@ statistics_tool = StructuredTool(
 )
 
 # -------------------------
-# Tool 4: Load model (imputation or mortality)
+# Tool 4: Load model (imputation)
 # -------------------------
 class ModelLoadInput(BaseModel):
     ckpt_path: str = Field(description="Model checkpoint path (for imputation)")
@@ -116,7 +119,7 @@ load_model_tool = Tool(
 )
 
 # -------------------------
-# Tool 5: Missing value imputation (infer)
+# Tool 5: Run imputation
 # -------------------------
 def infer():
     print("Running imputation...")
@@ -144,35 +147,59 @@ infer_tool = Tool(
 )
 
 # -------------------------
-# Tool 6: Predict mortality
+# Tool 6: Predict mortality (Updated with path and improved output)
 # -------------------------
 class MortalityPredictionInput(BaseModel):
-    csv_file_path: str = Field(description="Path to the input data CSV for mortality prediction")
-    model_path: str = Field(description="Path to the trained mortality prediction model (.pkl)")
+    icustayid: Union[int, str] = Field(description="ICU stay ID of the patient to predict mortality for")
 
-def predict_mortality(csv_file_path: str, model_path: str) -> str:
-    df = pd.read_csv(csv_file_path)
+def predict_mortality(icustayid: Union[int, str]) -> str:
+    csv_file_path = "/Users/vedanshi/Documents/GitHub/practical-ml-project-2/main/OpenManus-main/app/tool/tPatchGNN/tPatchGNN/predictions_dnn.csv"
+    
+    try:
+        df = pd.read_csv(csv_file_path, usecols=["icustayid", "Probability of Survival (0)", "Probability of Mortality (1)"])
+    except Exception as e:
+        return f"❌ Error reading CSV: {e}"
 
-    # Drop non-feature columns if needed
-    feature_df = df.drop(columns=["bloc", "charttime"], errors="ignore")
+    # Normalize both icustayid and df values to strings without '.0'
+    def normalize(val):
+        val_str = str(val)
+        return val_str.rstrip('.0') if val_str.endswith('.0') else val_str
 
-    # Handle missing values
-    feature_df = feature_df.fillna(feature_df.mean(numeric_only=True))
+    target_id = normalize(icustayid)
+    df["icustayid_normalized"] = df["icustayid"].apply(normalize)
 
-    model = joblib.load(model_path)
-    predictions = model.predict(feature_df)
+    matched_rows = df[df["icustayid_normalized"] == target_id]
 
-    return f"Mortality predictions: {predictions.tolist()}"
+    if matched_rows.empty:
+        return f"❌ icustayid '{icustayid}' not found in prediction file."
 
+    # Take the average probability across all rows for that icustayid
+    avg_prob = matched_rows["Probability of Mortality (1)"].mean()
+
+    # Return risk message based on threshold
+    if avg_prob > 50.0:
+        return (
+            f"⚠️ High risk of mortality for icustayid {icustayid}.\n"
+            f"🧮 Average Probability of Mortality: {avg_prob:.2f}%\n"
+            f"🔎 Please consider early intervention."
+        )
+    else:
+        return (
+            f"✅ Low risk of mortality for icustayid {icustayid}.\n"
+            f"🧮 Average Probability of Mortality: {avg_prob:.2f}%\n"
+            f"📋 Continue regular monitoring."
+        )
+    
 predict_mortality_tool = StructuredTool(
     name="predict_mortality",
     func=predict_mortality,
-    description="Predict patient mortality using the trained model. Requires csv_file_path and model_path.",
-    args_schema=MortalityPredictionInput
+    description="Predict mortality using a fixed CSV file and row index (icustayid).",
+    args_schema=MortalityPredictionInput,
+    return_direct=True  # 👈 ensures raw output is returned to user
 )
 
 # -------------------------
-# Tool 7: Save data to a file
+# Tool 7: Save data
 # -------------------------
 class SaveDataInput(BaseModel):
     data: str = Field(description="The data to save (as a string).")
@@ -224,7 +251,6 @@ prompt = ChatPromptTemplate.from_messages([
 agent = create_tool_calling_agent(llm, tools, prompt)
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-# Memory setup
 class InMemoryHistory(BaseChatMessageHistory, BaseModel):
     messages: list[BaseMessage] = Field(default_factory=list)
 
@@ -243,20 +269,11 @@ agent_with_memory = RunnableWithMessageHistory(
     history_messages_key="chat_history"
 )
 
-# -------------------------
-# Chat function
-# -------------------------
 def chat_with_agent(query: str) -> str:
     return agent_with_memory.invoke({"input": query}, config={"configurable": {"session_id": "<foo>"}})
 
-# -------------------------
-# Example usage
-# -------------------------
-# print(chat_with_agent(r"Predict mortality using C:\path\to\your\file.csv and model C:\path\to\mortality_model.pkl"))
-# Define the log file path
 LOG_FILE_PATH = "chat_history.log"
 
-# Function to save conversation to a log file
 def save_to_log(user_input: str, agent_response: str) -> None:
     with open(LOG_FILE_PATH, "a") as log_file:
         log_file.write(f"You: {user_input}\n")
@@ -273,10 +290,8 @@ if __name__ == "__main__":
         try:
             response = chat_with_agent(user_input)
             print(f"Agent: {response}")
-            # Save the conversation to the log file
             save_to_log(user_input, response)
         except Exception as e:
             error_message = f"Error: {e}"
             print(error_message)
-            # Save the error to the log file
             save_to_log(user_input, error_message)
