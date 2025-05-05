@@ -1,2 +1,2 @@
-main/dataset_stats_only.csv
-main/ultimate_dataset_with_stats.csv
+tPatchGNN/data/mimic/raw/full_dataset.csv
+tPatchGNN/data/mimic/processed/mimic.pt
