@@ -20,7 +20,7 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Load data
-CSV_PATH = "/Users/vedanshi/Documents/GitHub/practical-ml-project-2/data/test.csv"
+CSV_PATH = "data/test.csv"
 
 @st.cache_data
 def load_data(path):

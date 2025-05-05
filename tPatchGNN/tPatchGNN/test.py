@@ -229,7 +229,7 @@ class MortalityPredictionInput(BaseModel):
     icustayid: Union[int, str] = Field(description="ICU stay ID of the patient to predict mortality for")
 
 def predict_mortality(icustayid: Union[int, str]) -> str:
-    csv_file_path = "/Users/vedanshi/Documents/GitHub/practical-ml-project-2/tPatchGNN/tPatchGNN/predictions_dnn.csv"
+    csv_file_path = "tPatchGNN/tPatchGNN/predictions_dnn.csv"
     
     try:
         df = pd.read_csv(csv_file_path, usecols=["icustayid", "Probability of Survival (0)", "Probability of Mortality (1)"])
