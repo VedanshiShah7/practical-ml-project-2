@@ -103,47 +103,127 @@ class ModelLoadInput(BaseModel):
 
 def load_model(ckpt_path: str) -> str:
     print("Loading model from:", ckpt_path)
-    model, args = Inspector.load_ckpt(ckpt_path, torch.device("cuda" if torch.cuda.is_available() else "cpu"))
-    args.batch_size = 1
-    args.n = 100
-    data_obj = parse_datasets(args, patch_ts=True)
+    import argparse
+    import torch
+    import sys
+    import os
+
+    # Add the path so the module is discoverable
+    sys.path.append("/Users/vedanshi/Documents/GitHub/practical-ml-project-2/main/OpenManus-main/app/tool")
+
+    torch.serialization.add_safe_globals([argparse.Namespace])
+
+    try:
+        loaded = torch.load(
+            ckpt_path,
+            map_location=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        )
+    except Exception as e:
+        return f"❌ Failed to load checkpoint: {e}"
+
+    if isinstance(loaded, dict) and "state_dicts" in loaded and "args" in loaded:
+        print("Loading from state_dicts format...")
+        args = loaded["args"]
+        state_dict = loaded["state_dicts"]
+        import sys
+        sys.path.append('/Users/vedanshi/Documents/GitHub/practical-ml-project-2/main/OpenManus-main/app/tool')
+
+        from tPatchGNN.model.tPatchGNN import tPatchGNN
+
+        model = tPatchGNN(args).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+        model.load_state_dict(state_dict)
+    else:
+        return "❌ Unexpected checkpoint format."
+
+    try:
+        data_obj = parse_datasets(args, patch_ts=True)
+    except Exception as e:
+        return f"✅ Model loaded, but dataset parsing failed: {e}"
+
     global MODEL, DATA_OBJ
     MODEL = model
     DATA_OBJ = data_obj
-    return "Model loaded successfully."
+    return "✅ Model and dataset loaded successfully."
 
 load_model_tool = Tool(
     name="load_model",
     func=load_model,
-    description="Load model for data imputation or forecasting. Requires ckpt_path."
+    description="Load model for data imputation or forecasting. Requires ckpt_path.",
+    args_schema=ModelLoadInput
 )
 
 # -------------------------
 # Tool 5: Run imputation
 # -------------------------
-def infer():
+def infer(_=None):
     print("Running imputation...")
+
     model = MODEL
     dataloader = DATA_OBJ['train_dataloader']
-    n_batches = DATA_OBJ['n_train_batches']
+    n_batches = min(DATA_OBJ['n_train_batches'], 10)
 
-    for _ in range(n_batches):
+    import numpy as np
+    import pandas as pd
+    import os
+    import time
+
+    # Ensure directory exists
+    output_dir = "imputed_batches"
+    os.makedirs(output_dir, exist_ok=True)
+
+    preview = None
+    successful_batches = 0
+
+    for i in range(n_batches):
+        print(f"\n🔄 Processing batch {i+1}/{n_batches}")
         batch_dict = utils.get_next_batch(dataloader)
         if batch_dict is None:
+            print("⚠️ Batch is None — skipping.")
             continue
-        pred_y = model.forecasting(
-            batch_dict["tp_to_predict"],
-            batch_dict["observed_data"],
-            batch_dict["observed_tp"],
-            batch_dict["observed_mask"]
-        )
-        print(pred_y)
-    return "Imputation completed."
+
+        start = time.time()
+        try:
+            pred_y = model.forecasting(
+                batch_dict["tp_to_predict"],
+                batch_dict["observed_data"],
+                batch_dict["observed_tp"],
+                batch_dict["observed_mask"]
+            )
+
+            pred_np = pred_y.detach().cpu().numpy()
+            batch_shape = pred_np.shape
+
+            # Flatten prediction for CSV saving: (B, T, F) -> (B*T, F)
+            pred_flat = pred_np.reshape(-1, pred_np.shape[-1])
+
+            df = pd.DataFrame(pred_flat)
+            file_path = os.path.join(output_dir, f"imputed_batch_{i+1}.csv")
+            df.to_csv(file_path, index=False)
+
+            if preview is None:
+                preview = df.head().to_string(index=False)
+
+            print(f"✅ Saved to {file_path}")
+            successful_batches += 1
+            print(f"⏱️ Forecasting time: {time.time() - start:.2f} seconds")
+
+        except Exception as e:
+            print("❌ Error during forecasting:", e)
+            continue
+
+    if successful_batches == 0:
+        return "❌ No batches were successfully imputed."
+
+    return (
+        f"✅ Imputation completed for {successful_batches} batch(es).\n"
+        f"📁 Output saved in the folder: `{output_dir}`.\n"
+        f"📊 Preview of first batch:\n{preview}"
+    )
 
 infer_tool = Tool(
     name="infer",
     func=infer,
-    description="Run missing value imputation using the loaded model."
+    description="Run missing value imputation using the loaded model. No parameters required."
 )
 
 # -------------------------
