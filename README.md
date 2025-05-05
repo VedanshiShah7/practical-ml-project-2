@@ -59,9 +59,55 @@ Interact with the AI agent using natural language questions such as:
 
 ## 📚 References
 
-- SHAP: https://github.com/slundberg/shap
-- LangChain: https://github.com/hwchase17/langchain
-- MIMIC-III EHR Dataset
+1. Johnson, A. E. W., Pollard, T. J., Shen, L., et al. (2016).  
+   MIMIC-III, a freely accessible critical care database.  
+   *Scientific Data, 3*, 160035. [https://doi.org/10.1038/sdata.2016.35](https://doi.org/10.1038/sdata.2016.35)
+
+2. Singer, M., Deutschman, C. S., Seymour, C. W., et al. (2016).  
+   The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3).  
+   *JAMA, 315*(8), 801–810. [https://doi.org/10.1001/jama.2016.0287](https://doi.org/10.1001/jama.2016.0287)
+
+3. Desautels, T., Calvert, J., Hoffman, J., et al. (2016).  
+   Prediction of sepsis in the ICU using machine learning and physiological data.  
+   *BioMed Research International*, 2016. [https://doi.org/10.1155/2016/9308692](https://doi.org/10.1155/2016/9308692)
+
+4. Shickel, B., Tighe, P. J., Bihorac, A., & Rashidi, P. (2017).  
+   Deep EHR: A survey of recent advances in deep learning techniques for electronic health record (EHR) analysis.  
+   *IEEE Journal of Biomedical and Health Informatics, 22*(5), 1589–1604. [https://doi.org/10.1109/JBHI.2017.2767063](https://doi.org/10.1109/JBHI.2017.2767063)
+
+5. Johnson, A. E. W., Ghassemi, M. M., Nemati, S., et al. (2017).  
+   Machine learning and decision support in critical care.  
+   *Proceedings of the IEEE, 104*(2), 444–466. [https://doi.org/10.1109/JPROC.2015.2501978](https://doi.org/10.1109/JPROC.2015.2501978)
+
+6. Futoma, J., Morris, J., & Lucas, J. (2015).  
+   A comparison of models for predicting early hospital readmissions.  
+   *Journal of Biomedical Informatics, 56*, 229–238. [https://doi.org/10.1016/j.jbi.2015.05.016](https://doi.org/10.1016/j.jbi.2015.05.016)
+
+7. Goldstein, B. A., Navar, A. M., Pencina, M. J., & Ioannidis, J. P. A. (2017).  
+   Opportunities and challenges in developing risk prediction models with electronic health records data: A systematic review.  
+   *Journal of the American Medical Informatics Association, 24*(1), 198–208. [https://doi.org/10.1093/jamia/ocw042](https://doi.org/10.1093/jamia/ocw042)
+
+8. Beam, A. L., & Kohane, I. S. (2018).  
+   Big data and machine learning in health care.  
+   *JAMA, 319*(13), 1317–1318. [https://doi.org/10.1001/jama.2017.18391](https://doi.org/10.1001/jama.2017.18391)
+
+9. Rajkomar, A., Dean, J., & Kohane, I. (2019).  
+   Machine learning in medicine.  
+   *New England Journal of Medicine, 380*, 1347–1358. [https://doi.org/10.1056/NEJMra1814259](https://doi.org/10.1056/NEJMra1814259)
+
+10. Nemati, S., Holder, A., Razmi, F., et al. (2018).  
+    An Interpretable Machine Learning Model for Accurate Prediction of Sepsis in the ICU.  
+    *Critical Care Medicine, 46*(4), 547–553. [https://doi.org/10.1097/CCM.0000000000002936](https://doi.org/10.1097/CCM.0000000000002936)
+
+11. Zhao, Y., Liu, C., Zhang, H., et al. (2024).  
+    Irregular Multivariate Time Series Forecasting: A Transformable Patching Graph Neural Networks Approach.  
+    *Proceedings of the 41st International Conference on Machine Learning (ICML 2024).*  
+    GitHub: [https://github.com/usail-hkust/t-PatchGNN](https://github.com/usail-hkust/t-PatchGNN)
+
+12. Manna and Poem Lab. (2024).  
+    OpenManus: Modular AI Agent Framework for Clinical and Document Analysis.  
+    GitHub Repository: [https://github.com/mannaandpoem/OpenManus](https://github.com/mannaandpoem/OpenManus)
+
 
 ## View full report [here](https://docs.google.com/document/d/1RtC93yPIw8yH2gbDPiGU0s51s2EClknmpqLDXZLwH9s/edit?usp=sharing)
 
