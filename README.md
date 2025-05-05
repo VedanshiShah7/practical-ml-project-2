@@ -1,5 +1,6 @@
-
 # AI Agents for Sepsis EHR Analysis
+
+#### [Try it out here!](https://practical-ml-project-2.streamlit.app/)
 
 This project explores the integration of AI agents into Electronic Health Record (EHR) analysis for early prediction and explanation of Sepsis mortality risk. It combines deep learning techniques with a LangChain-based conversational agent to assist healthcare providers in data-driven decision-making.
 
