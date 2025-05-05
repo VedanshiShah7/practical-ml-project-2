@@ -114,4 +114,5 @@ Interact with the AI agent using natural language questions such as:
 
 ## 👨‍💻 Authors
 Vedanshi Shah
+
 Brandeis University - COSI 149B (Spring 2025)
